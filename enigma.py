@@ -35,8 +35,10 @@ class Rotor:
         return chr((ord(self.wiring[index]) - ord('A') - self.position) % 26 + ord('A'))
 
     def backward(self, char):
-        index = (self.wiring.index(char) - self.position) % 26
-        return chr((index + ord('A')) % 26)
+        # 修正(2026-10-29): forward の逆変換にするため、入力を position 分ずらしてから配線を逆引きし、戻り値は ord('A') を加えた後に % 26 を取らない（制御文字化して index() が失敗していた）
+        shifted = chr((ord(char) - ord('A') + self.position) % 26 + ord('A'))
+        index = (self.wiring.index(shifted) - self.position) % 26
+        return chr(index + ord('A'))
 
     def advance(self):
         self.position = (self.position + 1) % 26
